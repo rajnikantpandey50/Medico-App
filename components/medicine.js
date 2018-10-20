@@ -19,11 +19,10 @@ class Medicine extends Component {
           {/* <Text style={styles.rightText}>{medicine.manufacturerName}</Text> */}
         </View>
         <View style={styles.rightContainer}>
-          <Badge info>
-            <Text style={[styles.rightText, styles.quantity]}>
-              {medicine.quantity}
-            </Text>
-          </Badge>
+          <Text style={[styles.rightText, styles.quantity]}>
+            {medicine.quantity}
+          </Text>
+
           <Text style={styles.rightText}>{medicine.price}</Text>
         </View>
       </View>

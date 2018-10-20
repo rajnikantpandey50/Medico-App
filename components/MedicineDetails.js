@@ -7,8 +7,10 @@ class MedicineDetails extends Component {
     console.log("update");
   };
   dateFormat = date => {
+    console.log(date);
+    if (!date) return "Not Available";
     let newdate = new Date(date);
-    let dd = newdate.getDay() + 1;
+    let dd = newdate.getDate();
     let mm = newdate.getMonth() + 1;
     let yy = newdate.getFullYear();
     return dd + "/" + mm + "/" + yy;
@@ -17,13 +19,15 @@ class MedicineDetails extends Component {
     let {
       medicineName,
       manufacturerName,
+      medicineType,
       supplier,
-      price,
+      mrp,
       quantity,
       expiryDate,
       purchaseDate
     } = this.props.navigation.state.params;
-    expiryDate = this.dateFormat(expiryDate);
+    expiryDate = this.dateFormat(expiryDate[0]);
+    console.log(expiryDate);
     purchaseDate = this.dateFormat(purchaseDate);
     quantity = quantity | 0;
     return (
@@ -35,6 +39,14 @@ class MedicineDetails extends Component {
             </View>
             <View style={styles.column}>
               <Text style={styles.text}>{medicineName}</Text>
+            </View>
+          </View>
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <Text style={styles.text}>Medicine Type:</Text>
+            </View>
+            <View style={styles.column}>
+              <Text style={styles.text}>{medicineType}</Text>
             </View>
           </View>
           <View style={styles.row}>
@@ -55,10 +67,10 @@ class MedicineDetails extends Component {
           </View>
           <View style={styles.row}>
             <View style={styles.column}>
-              <Text style={styles.text}>Price:</Text>
+              <Text style={styles.text}>MRP:</Text>
             </View>
             <View style={styles.column}>
-              <Text style={styles.text}>{price}</Text>
+              <Text style={styles.text}>{mrp}</Text>
             </View>
           </View>
           <View style={styles.row}>
