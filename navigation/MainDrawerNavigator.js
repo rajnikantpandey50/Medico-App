@@ -10,6 +10,8 @@ import Medicines from "../components/Medicines";
 import MedicineDetails from "../components/MedicineDetails";
 import Header from "../components/header";
 import Buy from "../components/Buy";
+import Sell from "../components/Sell";
+import SellResult from "../components/SellResult";
 
 export const AddStack = createStackNavigator({
   Add: {
@@ -44,6 +46,25 @@ export const MedicineStack = createStackNavigator({
   }
 });
 
+export const SellStack = createStackNavigator({
+  Sell: {
+    screen: Sell,
+    navigationOptions: {
+      header: <Header title="Sell Medicines" />
+    },
+    headerMode: "float",
+    headerTransitionPreset: "fade-in-place"
+  },
+  Result: {
+    screen: SellResult,
+    navigationOptions: {
+      header: <Header title="Sell Result" />
+    },
+    headerMode: "float",
+    headerTransitionPreset: "fade-in-place"
+  }
+});
+
 export default createDrawerNavigator({
   Medicines: {
     screen: MedicineStack,
@@ -64,7 +85,14 @@ export default createDrawerNavigator({
     screen: Buy,
     navigationOptions: {
       drawerLabel: "Buy Medicine",
-      drawerIcon: <FontAwesome name="plus" size={20} color="#000" />
+      drawerIcon: <FontAwesome name="shopping-cart" size={20} color="#000" />
+    }
+  },
+  Sell: {
+    screen: SellStack,
+    navigationOptions: {
+      drawerLabel: "Sell Medicine",
+      drawerIcon: <FontAwesome name="money" size={20} color="#000" />
     }
   }
 });

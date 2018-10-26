@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableNativeFeedback } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableNativeFeedback,
+  ScrollView
+} from "react-native";
 
 class MedicineDetails extends Component {
   state = {};
@@ -21,17 +27,32 @@ class MedicineDetails extends Component {
       manufacturerName,
       medicineType,
       supplier,
-      mrp,
       quantity,
-      expiryDate,
-      purchaseDate
+      mrp,
+      totalQuantity,
+      //expiryDate,
+      purchaseDate,
+      totalSold
     } = this.props.navigation.state.params;
-    expiryDate = this.dateFormat(expiryDate[0]);
-    console.log(expiryDate);
+    //expiryDate = this.dateFormat(expiryDate[0]);
+    // console.log(expiryDate);
     purchaseDate = this.dateFormat(purchaseDate);
-    quantity = quantity | 0;
+    totalQuantity = totalQuantity || 0;
+    let expDate = "Not Available";
+    let expiryDate = [];
+    quantity.forEach(q => {
+      //  console.log(q.expiryDate);
+      expiryDate.push(q.expiryDate);
+    });
+    if (expiryDate.length > 0) {
+      expDate = this.dateFormat(
+        expiryDate.reduce(function(a, b) {
+          return a < b ? a : b;
+        })
+      );
+    } else expDate = "Not Available";
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <View style={{ borderWidth: 1 }}>
           <View style={styles.row}>
             <View style={styles.column}>
@@ -78,7 +99,7 @@ class MedicineDetails extends Component {
               <Text style={styles.text}>Quantity:</Text>
             </View>
             <View style={styles.column}>
-              <Text style={styles.text}>{quantity}</Text>
+              <Text style={styles.text}>{totalQuantity}</Text>
             </View>
           </View>
           <View style={styles.row}>
@@ -86,7 +107,7 @@ class MedicineDetails extends Component {
               <Text style={styles.text}>Exp. Date:</Text>
             </View>
             <View style={styles.column}>
-              <Text style={styles.text}> {expiryDate}</Text>
+              <Text style={styles.text}> {expDate}</Text>
             </View>
           </View>
           <View style={styles.row}>
@@ -95,6 +116,14 @@ class MedicineDetails extends Component {
             </View>
             <View style={styles.column}>
               <Text style={styles.text}> {purchaseDate}</Text>
+            </View>
+          </View>
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <Text style={styles.text}>Total Sold:</Text>
+            </View>
+            <View style={styles.column}>
+              <Text style={styles.text}> {totalSold || 0} Pack</Text>
             </View>
           </View>
         </View>
@@ -106,7 +135,7 @@ class MedicineDetails extends Component {
             <Text style={styles.buttonText}>Update</Text>
           </View>
         </TouchableNativeFeedback>
-      </View>
+      </ScrollView>
     );
   }
 }

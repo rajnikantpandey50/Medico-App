@@ -20,10 +20,11 @@ class Medicine extends Component {
         </View>
         <View style={styles.rightContainer}>
           <Text style={[styles.rightText, styles.quantity]}>
-            {medicine.quantity}
+            Quantity:
+            {parseInt(medicine.totalQuantity) || 0}
           </Text>
 
-          <Text style={styles.rightText}>{medicine.price}</Text>
+          <Text style={styles.rightText}>MRP: {medicine.mrp}</Text>
         </View>
       </View>
     );
@@ -41,11 +42,11 @@ const styles = StyleSheet.create({
     width: 350,
     marginLeft: 5,
     marginTop: 5,
-    backgroundColor: "#fFF",
+    backgroundColor: "#4169E1",
     flexDirection: "row"
   },
   title: {
-    color: "#000",
+    color: "#fff",
     paddingBottom: 5,
     fontSize: 20,
     fontWeight: "bold"
@@ -62,11 +63,11 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   rightText: {
-    color: "#000",
+    color: "#fff",
     fontSize: 20
   },
   leftText: {
-    color: "#000",
+    color: "#fff",
     fontSize: 20
   },
   quantity: {

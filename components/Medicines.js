@@ -17,7 +17,7 @@ export default class Medicines extends React.Component {
     isLoading: true
   };
   componentDidMount() {
-    var url = Configs.serviceUrl + "medicines";
+    var url = Configs.localUrl + "medicines";
     return fetch(url)
       .then(response => response.json())
       .then(res => {

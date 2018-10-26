@@ -4,16 +4,26 @@ import {
   TextInput,
   ScrollView,
   DatePickerAndroid,
-  Button,
+  //Button,
   KeyboardAvoidingView,
   TouchableOpacity,
-  Picker,
+  // Picker,
   StyleSheet,
   TouchableNativeFeedback,
   View
 } from "react-native";
 import Header from "./header";
 import Configs from "../constants/Configs";
+import {
+  Container,
+  Content,
+  Form,
+  Item,
+  Label,
+  Input,
+  Button,
+  Picker
+} from "native-base";
 
 class Add extends Component {
   state = {
@@ -40,7 +50,7 @@ class Add extends Component {
       // purchaseDate: this.state.purchaseDate
     };
     //console.log(medicine);
-    var url = Configs.serviceUrl + "medicines";
+    var url = Configs.localUrl + "medicines";
     fetch(url, {
       method: "POST",
       headers: {
@@ -73,76 +83,86 @@ class Add extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        {/* <Header title="Add Medicine" /> */}
-        <View style={styles.body}>
-          <TextInput
-            style={styles.input}
-            placeholder="Medicine Name"
-            onChangeText={text => this.setState({ medicineName: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Manufacturer"
-            onChangeText={text => this.setState({ manufacturer: text })}
-          />
-          <Picker
-            style={styles.picker}
-            selectedValue={this.state.medicineType}
-            onValueChange={(value, index) =>
-              this.setState({ medicineType: value })
-            }
-            mode="dropdown"
-          >
-            {this.state.types.map((type, i) => {
-              return <Picker.Item key={i} label={type} value={type} />;
-            })}
-          </Picker>
-          {/*<TextInput
-              style={styles.input}
-              placeholder="Supplier"
-              onChangeText={text => this.setState({ supplier: text })}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Price"
-              onChangeText={text => this.setState({ price: text })}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Quantity"
-              onChangeText={text => this.setState({ quantity: text })}
-            />
-            <TouchableOpacity onPress={() => this.datepick("expiryDate")}>
-              <TextInput
-                style={styles.input}
-                placeholder="Expiry Date"
-                value={this.state.expiryDate}
-                // onFocus={() => this.datepick("expiryDate")}
-                editable={false}
-                underlineColorAndroid="#000"
+      // <View style={styles.container}>
+      //   {/* <Header title="Add Medicine" /> */}
+      //   <View style={styles.body}>
+      //     <TextInput
+      //       style={styles.input}
+      //       placeholder="Medicine Name"
+      //       onChangeText={text => this.setState({ medicineName: text })}
+      //     />
+      //     <TextInput
+      //       style={styles.input}
+      //       placeholder="Manufacturer"
+      //       onChangeText={text => this.setState({ manufacturer: text })}
+      //     />
+      //     <Picker
+      //       style={styles.picker}
+      //       selectedValue={this.state.medicineType}
+      //       onValueChange={(value, index) =>
+      //         this.setState({ medicineType: value })
+      //       }
+      //       mode="dropdown"
+      //     >
+      //       {this.state.types.map((type, i) => {
+      //         return <Picker.Item key={i} label={type} value={type} />;
+      //       })}
+      //     </Picker>
+
+      //     <TouchableNativeFeedback
+      //       onPress={this.submit}
+      //       background={TouchableNativeFeedback.SelectableBackground()}
+      //     >
+      //       <View style={styles.button}>
+      //         <Text style={styles.buttonText}>Add</Text>
+      //       </View>
+      //     </TouchableNativeFeedback>
+      //   </View>
+      // </View>
+
+      <Container>
+        <Content>
+          <Form>
+            <Item floatingLabel>
+              <Label>Medicine Name</Label>
+              <Input
+                onChangeText={text => this.setState({ medicineName: text })}
               />
-            </TouchableOpacity>
-             <TouchableOpacity onPress={() => this.datepick("purchaseDate")}>
-              <TextInput
-                style={styles.input}
-                placeholder="Purchase Date"
-                //onChangeText={text => this.setState({ purchaseDate: text })}
-                editable={false}
-                value={this.state.purchaseDate}
-                underlineColorAndroid="#000"
+            </Item>
+            <Item floatingLabel>
+              <Label>Manufacturer Name</Label>
+              <Input
+                onChangeText={text => this.setState({ manufacturer: text })}
               />
-            </TouchableOpacity> */}
-          <TouchableNativeFeedback
+            </Item>
+            <Item>
+              <Picker
+                style={styles.picker}
+                selectedValue={this.state.medicineType}
+                onValueChange={(value, index) =>
+                  this.setState({ medicineType: value })
+                }
+                mode="dropdown"
+              >
+                {this.state.types.map((type, i) => {
+                  return <Picker.Item key={i} label={type} value={type} />;
+                })}
+              </Picker>
+            </Item>
+          </Form>
+          <Button
+            primary
+            block
+            rounded
+            style={{ margin: 30 }}
             onPress={this.submit}
-            background={TouchableNativeFeedback.SelectableBackground()}
           >
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>Add</Text>
-            </View>
-          </TouchableNativeFeedback>
-        </View>
-      </View>
+            <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 20 }}>
+              Submit
+            </Text>
+          </Button>
+        </Content>
+      </Container>
     );
   }
 }
