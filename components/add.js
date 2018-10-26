@@ -50,7 +50,7 @@ class Add extends Component {
       // purchaseDate: this.state.purchaseDate
     };
     //console.log(medicine);
-    var url = Configs.localUrl + "medicines";
+    var url = Configs.ServiceUrl + "medicines";
     fetch(url, {
       method: "POST",
       headers: {

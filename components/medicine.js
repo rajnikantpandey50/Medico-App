@@ -20,8 +20,8 @@ class Medicine extends Component {
         </View>
         <View style={styles.rightContainer}>
           <Text style={[styles.rightText, styles.quantity]}>
-            Quantity:
-            {parseInt(medicine.totalQuantity) || 0}
+            Pack:
+            {" " + parseInt(medicine.totalQuantity || 0)}
           </Text>
 
           <Text style={styles.rightText}>MRP: {medicine.mrp}</Text>

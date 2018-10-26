@@ -41,8 +41,7 @@ class MedicineDetails extends Component {
     let expDate = "Not Available";
     let expiryDate = [];
     quantity.forEach(q => {
-      //  console.log(q.expiryDate);
-      expiryDate.push(q.expiryDate);
+      if (q.pack > 0) expiryDate.push(q.expiryDate);
     });
     if (expiryDate.length > 0) {
       expDate = this.dateFormat(

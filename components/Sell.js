@@ -50,7 +50,7 @@ class Sell extends React.Component {
   }
 
   sellMedicines = () => {
-    let url = Configs.localUrl + "medicine/sell";
+    let url = Configs.ServiceUrl + "medicine/sell";
     console.log(url);
     console.log(JSON.stringify(this.state.medicines));
     fetch(url, {
@@ -71,7 +71,7 @@ class Sell extends React.Component {
   filterData = query => {
     this.setState({ medicineName: query });
     if (query.length >= 1) {
-      let url = Configs.localUrl + "medicines/" + query;
+      let url = Configs.ServiceUrl + "medicines/" + query;
       console.log(url);
       fetch(url)
         .then(response => response.json())
@@ -107,7 +107,12 @@ class Sell extends React.Component {
           renderRow={item => (
             <ListItem>
               <TouchableOpacity
-                style={{ paddingLeft: 20, paddingRight: 150 }}
+                style={{
+                  paddingLeft: 20,
+                  paddingRight: 150,
+                  paddingTop: 5,
+                  paddingBottom: 5
+                }}
                 onPress={() =>
                   this.setState({
                     medicineName: item.medicineName,
@@ -188,7 +193,7 @@ class Sell extends React.Component {
       medicineName: "",
       cardVisible: false,
       data: [],
-      // expiryDate: null,
+      expiryDate: [],
       modalVisible: false,
       submit: true
     });
@@ -315,12 +320,18 @@ class Sell extends React.Component {
             <View style={{ margin: 30, flexDirection: "row" }}>
               <Button
                 primary
+                rounded
                 style={{ flex: 1, marginRight: 10 }}
                 onPress={() => this.setState({ submit: false })}
               >
                 <Text>Add More</Text>
               </Button>
-              <Button primary style={{ flex: 1 }} onPress={this.sellMedicines}>
+              <Button
+                success
+                rounded
+                style={{ flex: 1 }}
+                onPress={this.sellMedicines}
+              >
                 <Text>Sell</Text>
               </Button>
             </View>

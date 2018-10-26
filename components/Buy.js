@@ -81,7 +81,7 @@ class Buy extends Component {
   filterData = query => {
     this.setState({ medicineName: query });
     if (query.length >= 1) {
-      let url = Configs.localUrl + "medicines/" + query;
+      let url = Configs.ServiceUrl + "medicines/" + query;
       console.log(url);
       fetch(url)
         .then(response => response.json())
@@ -112,6 +112,12 @@ class Buy extends Component {
           renderRow={item => (
             <ListItem>
               <TouchableOpacity
+                style={{
+                  paddingLeft: 20,
+                  paddingRight: 150,
+                  paddingTop: 5,
+                  paddingBottom: 5
+                }}
                 onPress={() =>
                   this.setState({
                     medicineName: item.medicineName,
@@ -194,17 +200,7 @@ class Buy extends Component {
   };
 
   buyMedicine = () => {
-    // const value = {
-    //   medicineName: this.state.medicineName,
-    //   supplier: this.state.supplier,
-    //   mrp: this.state.mrp,
-    //   price: this.state.price,
-    //   quantity: this.state.quantity,
-    //   ppp: this.state.ppp,
-    //   purchaseDate: this.state.date,
-    //   expiryDate: this.state.expiryDate
-    // };
-    const url = Configs.localUrl + "medicine/buy";
+    const url = Configs.ServiceUrl + "medicine/buy";
     fetch(url, {
       method: "POST",
       headers: {
@@ -362,7 +358,7 @@ class Buy extends Component {
                 <Text>Add More</Text>
               </Button>
               <Button
-                primary
+                success
                 rounded
                 style={{ flex: 1 }}
                 onPress={this.buyMedicine}
