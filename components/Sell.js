@@ -29,6 +29,7 @@ class Sell extends React.Component {
   state = {
     loading: true,
     medicines: [],
+    medicineType: "",
     piece: false,
     quantity: 0,
     medicineName: "",
@@ -36,7 +37,8 @@ class Sell extends React.Component {
     data: [],
     expiryDate: [],
     modalVisible: false,
-    submit: false
+    submit: false,
+    isSame: true
   };
 
   async componentWillMount() {
@@ -50,7 +52,7 @@ class Sell extends React.Component {
   }
 
   sellMedicines = () => {
-    let url = Configs.ServiceUrl + "medicine/sell";
+    let url = Configs.serviceUrl + "medicine/sell";
     console.log(url);
     console.log(JSON.stringify(this.state.medicines));
     fetch(url, {
@@ -71,7 +73,7 @@ class Sell extends React.Component {
   filterData = query => {
     this.setState({ medicineName: query });
     if (query.length >= 1) {
-      let url = Configs.ServiceUrl + "medicines/" + query;
+      let url = Configs.serviceUrl + "medicines/" + query;
       console.log(url);
       fetch(url)
         .then(response => response.json())
@@ -116,6 +118,7 @@ class Sell extends React.Component {
                 onPress={() =>
                   this.setState({
                     medicineName: item.medicineName,
+                    medicineType: item.medicineType,
                     cardVisible: false
                   })
                 }
@@ -146,7 +149,7 @@ class Sell extends React.Component {
 
   datePickers = () => {
     var indents = [];
-    if (this.state.piece) {
+    if (this.state.piece || this.state.isSame) {
       indents.push(
         <ListItem key={"p"}>
           <Left>
@@ -181,7 +184,8 @@ class Sell extends React.Component {
       medicineName: this.state.medicineName,
       quantity: this.state.quantity,
       expDate: this.state.expiryDate,
-      piece: this.state.piece
+      piece: this.state.piece,
+      isSame: this.state.isSame
     };
 
     let medicines = this.state.medicines;
@@ -198,6 +202,13 @@ class Sell extends React.Component {
       submit: true
     });
   };
+
+  onCancel = () => {
+    if (this.state.medicines.length > 0) {
+      this.setState({ submit: true });
+    } else this.props.navigation.navigate("Medicines");
+  };
+
   render() {
     if (this.state.loading) {
       return <Expo.AppLoading />;
@@ -234,6 +245,12 @@ class Sell extends React.Component {
                 </View>
                 <View style={{ flex: 1, flexDirection: "row" }}>
                   <Radio
+                    disabled={
+                      !(
+                        this.state.medicineType === "Tablet" ||
+                        this.state.medicineType === "Capsule"
+                      )
+                    }
                     style={{ flex: 1 }}
                     selected={this.state.piece}
                     onPress={() => this.setState({ piece: true })}
@@ -254,11 +271,39 @@ class Sell extends React.Component {
               transparent={false}
               visible={this.state.modalVisible}
               onRequestClose={() => {
-                alert("Modal has been closed.");
+                () => this.setModalVisible(false);
               }}
             >
-              <View style={{ marginTop: 22, flex: 1, flexDirection: "column" }}>
+              <Content
+                style={{ marginTop: 22, flex: 1, flexDirection: "column" }}
+              >
                 <H1 style={{ margin: 10 }}>Expiry Date</H1>
+                <ListItem
+                  underline={false}
+                  style={{
+                    borderColor: "#fff",
+                    paddingTop: 10,
+                    flexDirection: "row"
+                  }}
+                >
+                  <View style={{ flex: 1, flexDirection: "row" }}>
+                    <Radio
+                      style={{ flex: 1 }}
+                      selected={this.state.isSame}
+                      onPress={() => this.setState({ isSame: true })}
+                    />
+                    <Text style={{ flex: 5 }}>Same</Text>
+                  </View>
+                  <View style={{ flex: 1, flexDirection: "row" }}>
+                    <Radio
+                      style={{ flex: 1 }}
+                      selected={!this.state.isSame}
+                      onPress={() => this.setState({ isSame: false })}
+                    />
+                    <Text style={{ flex: 5 }}>Different</Text>
+                  </View>
+                </ListItem>
+
                 <List>{this.datePickers()}</List>
                 <View style={{ margin: 30, flexDirection: "row" }}>
                   <Button
@@ -278,18 +323,27 @@ class Sell extends React.Component {
                     <Text>Cancel</Text>
                   </Button>
                 </View>
-              </View>
+              </Content>
             </Modal>
 
-            <Button
-              primary
-              block
-              rounded
-              style={{ margin: 30, marginTop: 100 }}
-              onPress={() => this.setModalVisible(true)}
-            >
-              <Text>Submit</Text>
-            </Button>
+            <View style={{ margin: 30, marginTop: 100, flexDirection: "row" }}>
+              <Button
+                primary
+                rounded
+                style={{ flex: 1, marginRight: 10 }}
+                onPress={() => this.setModalVisible(true)}
+              >
+                <Text>Submit</Text>
+              </Button>
+              <Button
+                danger
+                rounded
+                style={{ flex: 1 }}
+                onPress={this.onCancel}
+              >
+                <Text>Cancel</Text>
+              </Button>
+            </View>
           </Content>
         )}
 

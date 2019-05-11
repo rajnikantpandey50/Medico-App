@@ -24,18 +24,20 @@ import {
   Button,
   Picker
 } from "native-base";
+import MedicineTypes from "../constants/MedicineTypes";
 
 class Add extends Component {
   state = {
     medicineName: "",
     manufacturer: "",
     medicineType: "Tablet",
+    otherType: false,
     supplier: "",
     purchaseDate: "",
     expiryDate: "",
     price: 0,
     quantity: 0,
-    types: ["Tablet", "Capsule", "Injection", "Syrup"]
+    types: MedicineTypes
   };
 
   submit = () => {
@@ -50,7 +52,7 @@ class Add extends Component {
       // purchaseDate: this.state.purchaseDate
     };
     //console.log(medicine);
-    var url = Configs.ServiceUrl + "medicines";
+    var url = Configs.serviceUrl + "medicines";
     fetch(url, {
       method: "POST",
       headers: {
@@ -83,85 +85,64 @@ class Add extends Component {
 
   render() {
     return (
-      // <View style={styles.container}>
-      //   {/* <Header title="Add Medicine" /> */}
-      //   <View style={styles.body}>
-      //     <TextInput
-      //       style={styles.input}
-      //       placeholder="Medicine Name"
-      //       onChangeText={text => this.setState({ medicineName: text })}
-      //     />
-      //     <TextInput
-      //       style={styles.input}
-      //       placeholder="Manufacturer"
-      //       onChangeText={text => this.setState({ manufacturer: text })}
-      //     />
-      //     <Picker
-      //       style={styles.picker}
-      //       selectedValue={this.state.medicineType}
-      //       onValueChange={(value, index) =>
-      //         this.setState({ medicineType: value })
-      //       }
-      //       mode="dropdown"
-      //     >
-      //       {this.state.types.map((type, i) => {
-      //         return <Picker.Item key={i} label={type} value={type} />;
-      //       })}
-      //     </Picker>
-
-      //     <TouchableNativeFeedback
-      //       onPress={this.submit}
-      //       background={TouchableNativeFeedback.SelectableBackground()}
-      //     >
-      //       <View style={styles.button}>
-      //         <Text style={styles.buttonText}>Add</Text>
-      //       </View>
-      //     </TouchableNativeFeedback>
-      //   </View>
-      // </View>
-
       <Container>
-        <Content>
-          <Form>
-            <Item floatingLabel>
-              <Label>Medicine Name</Label>
-              <Input
-                onChangeText={text => this.setState({ medicineName: text })}
-              />
-            </Item>
-            <Item floatingLabel>
-              <Label>Manufacturer Name</Label>
-              <Input
-                onChangeText={text => this.setState({ manufacturer: text })}
-              />
-            </Item>
-            <Item>
-              <Picker
-                style={styles.picker}
-                selectedValue={this.state.medicineType}
-                onValueChange={(value, index) =>
-                  this.setState({ medicineType: value })
-                }
-                mode="dropdown"
-              >
-                {this.state.types.map((type, i) => {
-                  return <Picker.Item key={i} label={type} value={type} />;
-                })}
-              </Picker>
-            </Item>
-          </Form>
-          <Button
-            primary
-            block
-            rounded
-            style={{ margin: 30 }}
-            onPress={this.submit}
-          >
-            <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 20 }}>
-              Submit
-            </Text>
-          </Button>
-        </Content>
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+          <Content>
+            <Form>
+              <Item floatingLabel>
+                <Label>Medicine Name</Label>
+                <Input
+                  onChangeText={text => this.setState({ medicineName: text })}
+                />
+              </Item>
+              <Item floatingLabel>
+                <Label>Manufacturer Name</Label>
+                <Input
+                  onChangeText={text => this.setState({ manufacturer: text })}
+                />
+              </Item>
+              <Item>
+                <Picker
+                  style={styles.picker}
+                  selectedValue={
+                    (this.state.otherType && "Other") || this.state.medicineType
+                  }
+                  onValueChange={(value, index) => {
+                    if (value === "Other") this.setState({ otherType: true });
+                    else this.setState({ otherType: false });
+                    this.setState({ medicineType: value });
+                  }}
+                  mode="dropdown"
+                >
+                  {this.state.types.map((type, i) => {
+                    return <Picker.Item key={i} label={type} value={type} />;
+                  })}
+                </Picker>
+              </Item>
+              {this.state.otherType && (
+                <Item floatingLabel>
+                  <Label>Medicine Type</Label>
+                  <Input
+                    onChangeText={text => {
+                      this.setState({ medicineType: text });
+                    }}
+                  />
+                </Item>
+              )}
+            </Form>
+            <Button
+              primary
+              block
+              rounded
+              style={{ margin: 30 }}
+              onPress={this.submit}
+            >
+              <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 20 }}>
+                Submit
+              </Text>
+            </Button>
+          </Content>
+        </KeyboardAvoidingView>
       </Container>
     );
   }

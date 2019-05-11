@@ -2,12 +2,19 @@ import React, { Component } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { withNavigation } from "react-navigation";
+import { Right, Button } from "native-base";
+import * as firebase from "firebase";
 
 class Header extends Component {
   state = {};
   open = () => {
     this.props.navigation.openDrawer();
   };
+  logout = () => {
+    firebase.auth().signOut();
+    this.props.navigation.navigate("login");
+  };
+
   render() {
     return (
       <View style={styles.headerContainer}>
@@ -15,6 +22,10 @@ class Header extends Component {
           <FontAwesome name="bars" size={30} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerText}>{this.props.title}</Text>
+
+        {/* <Button transparent style={styles.logout} onPress={this.logout}>
+          <FontAwesome name="sign-out" size={30} color="#fff" />
+        </Button> */}
       </View>
     );
   }
@@ -43,5 +54,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 5,
     marginTop: 10
+  },
+  logout: {
+    flex: 1,
+    alignContent: "flex-end",
+    justifyContent: "center",
+    marginTop: 30
   }
 });

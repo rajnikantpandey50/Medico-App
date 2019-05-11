@@ -19,7 +19,8 @@ import {
   ListItem,
   View,
   H1,
-  Right
+  Right,
+  Radio
 } from "native-base";
 import Header from "../components/header";
 import {
@@ -46,6 +47,7 @@ class Buy extends Component {
     data: [],
     cardVisible: false,
     medicineName: "",
+    medicineType: "",
     supplier: "",
     mrp: 0,
     price: 0,
@@ -54,7 +56,8 @@ class Buy extends Component {
     date: "",
     expiryDate: [],
     modalVisible: false,
-    medicines: []
+    medicines: [],
+    isSame: true
   };
   async componentWillMount() {
     await Expo.Font.loadAsync({
@@ -81,7 +84,7 @@ class Buy extends Component {
   filterData = query => {
     this.setState({ medicineName: query });
     if (query.length >= 1) {
-      let url = Configs.ServiceUrl + "medicines/" + query;
+      let url = Configs.serviceUrl + "medicines/" + query;
       console.log(url);
       fetch(url)
         .then(response => response.json())
@@ -121,6 +124,7 @@ class Buy extends Component {
                 onPress={() =>
                   this.setState({
                     medicineName: item.medicineName,
+                    medicineType: item.medicineType,
                     cardVisible: false,
                     content: {}
                   })
@@ -152,18 +156,32 @@ class Buy extends Component {
 
   datePickers = () => {
     var indents = [];
-    for (var i = 0; i < this.state.quantity; i++) {
+    if (this.state.isSame) {
       indents.push(
-        <ListItem key={i}>
+        <ListItem key={"p"}>
           <Left>
-            <Text>{i + 1}.</Text>
+            <Text>1.</Text>
 
-            <Body style={{ flex: 1 }}>
+            <Body>
               <DatePicker onDateChange={this.setExpDate} />
             </Body>
           </Left>
         </ListItem>
       );
+    } else {
+      for (var i = 0; i < this.state.quantity; i++) {
+        indents.push(
+          <ListItem key={i}>
+            <Left>
+              <Text>{i + 1}.</Text>
+
+              <Body style={{ flex: 1 }}>
+                <DatePicker onDateChange={this.setExpDate} />
+              </Body>
+            </Left>
+          </ListItem>
+        );
+      }
     }
     return indents;
   };
@@ -172,6 +190,7 @@ class Buy extends Component {
     let medicines = this.state.medicines;
     let medicine = {
       medicineName: this.state.medicineName,
+      isSame: this.state.isSame,
       supplier: this.state.supplier,
       mrp: this.state.mrp,
       price: this.state.price,
@@ -200,7 +219,7 @@ class Buy extends Component {
   };
 
   buyMedicine = () => {
-    const url = Configs.ServiceUrl + "medicine/buy";
+    const url = Configs.serviceUrl + "medicine/buy";
     fetch(url, {
       method: "POST",
       headers: {
@@ -213,6 +232,13 @@ class Buy extends Component {
       this.props.navigation.navigate("Medicines");
     });
   };
+
+  onCancel = () => {
+    if (this.state.medicines.length > 0) {
+      this.setState({ submit: true });
+    } else this.props.navigation.navigate("Medicines");
+  };
+
   render() {
     if (this.state.loading) {
       return <Expo.AppLoading />;
@@ -255,10 +281,15 @@ class Buy extends Component {
                     onChangeText={text => this.setState({ quantity: text })}
                   />
                 </Item>
-                <Item floatingLabel>
-                  <Label>Piece per Pack</Label>
-                  <Input onChangeText={text => this.setState({ ppp: text })} />
-                </Item>
+                {(this.state.medicineType === "Tablet" ||
+                  this.state.medicineType === "Capsule") && (
+                  <Item floatingLabel>
+                    <Label>Piece per Pack</Label>
+                    <Input
+                      onChangeText={text => this.setState({ ppp: text })}
+                    />
+                  </Item>
+                )}
                 <Item stackedLabel>
                   <Label>Purchase Date</Label>
                   <TouchableOpacity
@@ -285,14 +316,39 @@ class Buy extends Component {
                   transparent={false}
                   visible={this.state.modalVisible}
                   onRequestClose={() => {
-                    alert("Modal has been closed.");
+                    () => this.setModalVisible(false);
                   }}
                 >
-                  <View
+                  <Content
                     style={{ marginTop: 22, flex: 1, flexDirection: "column" }}
                   >
                     <H1 style={{ margin: 10 }}>Expiry Date</H1>
-                    {this.datePickers()}
+                    <ListItem
+                      underline={false}
+                      style={{
+                        borderColor: "#fff",
+                        paddingTop: 10,
+                        flexDirection: "row"
+                      }}
+                    >
+                      <View style={{ flex: 1, flexDirection: "row" }}>
+                        <Radio
+                          style={{ flex: 1 }}
+                          selected={this.state.isSame}
+                          onPress={() => this.setState({ isSame: true })}
+                        />
+                        <Text style={{ flex: 5 }}>Same</Text>
+                      </View>
+                      <View style={{ flex: 1, flexDirection: "row" }}>
+                        <Radio
+                          style={{ flex: 1 }}
+                          selected={!this.state.isSame}
+                          onPress={() => this.setState({ isSame: false })}
+                        />
+                        <Text style={{ flex: 5 }}>Different</Text>
+                      </View>
+                    </ListItem>
+                    <List>{this.datePickers()}</List>
                     <View style={{ margin: 30, flexDirection: "row" }}>
                       <Button
                         primary
@@ -311,18 +367,27 @@ class Buy extends Component {
                         <Text>Cancel</Text>
                       </Button>
                     </View>
-                  </View>
+                  </Content>
                 </Modal>
               </Form>
-              <Button
-                primary
-                block
-                rounded
-                style={{ margin: 30 }}
-                onPress={() => this.setModalVisible(true)}
-              >
-                <Text>Submit</Text>
-              </Button>
+              <View style={{ margin: 30, flexDirection: "row" }}>
+                <Button
+                  primary
+                  rounded
+                  style={{ flex: 1, marginRight: 10 }}
+                  onPress={() => this.setModalVisible(true)}
+                >
+                  <Text>Submit</Text>
+                </Button>
+                <Button
+                  danger
+                  rounded
+                  style={{ flex: 1 }}
+                  onPress={this.onCancel}
+                >
+                  <Text>Cancel</Text>
+                </Button>
+              </View>
             </Content>
           </KeyboardAvoidingView>
         )}

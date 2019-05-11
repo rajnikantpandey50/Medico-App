@@ -1,14 +1,28 @@
 import React, { Component } from "react";
 import {
-  View,
-  Text,
+  // View,
+  //Text,
   StyleSheet,
   TouchableNativeFeedback,
-  ScrollView
+  ScrollView,
+  Alert
 } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Button, Text, View } from "native-base";
+import Expo from "expo";
+import Configs from "../constants/Configs";
 
 class MedicineDetails extends Component {
-  state = {};
+  state = { loading: true };
+  async componentWillMount() {
+    await Expo.Font.loadAsync({
+      Roboto: require("native-base/Fonts/Roboto.ttf"),
+      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
+      Ionicons: require("@expo/vector-icons/fonts/Ionicons.ttf")
+    });
+
+    this.setState({ loading: false });
+  }
   update = () => {
     console.log("update");
   };
@@ -21,7 +35,42 @@ class MedicineDetails extends Component {
     let yy = newdate.getFullYear();
     return dd + "/" + mm + "/" + yy;
   };
+
+  deleteConfirmation = () => {
+    Alert.alert("Delete Medicine", "Are you sure you want to delete?", [
+      { text: "No", onPress: () => console.log("Cancelled") },
+      { text: "Yes", onPress: this.deleteMedicine }
+    ]);
+  };
+
+  deleteMedicine = () => {
+    var url = Configs.serviceUrl + "medicines/delete";
+
+    let medicine = this.props.navigation.state.params;
+
+    return fetch(url, {
+      method: "delete",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(medicine)
+    })
+      .then(res => res.json())
+      .then(response => {
+        console.log(response);
+        if (response.message == "Success")
+          this.props.navigation.navigate("Medicines");
+      })
+      .catch(err => console.log(err));
+  };
+
+  editMedicine = () => {
+    this.props.navigation.navigate("Edit", this.props.navigation.state.params);
+  };
+
   render() {
+    if (this.state.loading) return <Expo.AppLoading />;
     let {
       medicineName,
       manufacturerName,
@@ -126,14 +175,35 @@ class MedicineDetails extends Component {
             </View>
           </View>
         </View>
-        <TouchableNativeFeedback
+        {/* <TouchableNativeFeedback
           onPress={this.update}
           background={TouchableNativeFeedback.SelectableBackground()}
         >
           <View style={styles.button}>
             <Text style={styles.buttonText}>Update</Text>
           </View>
-        </TouchableNativeFeedback>
+        </TouchableNativeFeedback> */}
+
+        <View style={{ margin: 30, flexDirection: "row" }}>
+          <Button
+            primary
+            rounded
+            style={{ flex: 1, marginRight: 10 }}
+            onPress={this.editMedicine}
+          >
+            <FontAwesome name="pencil" size={20} color="#fff" />
+            <Text>Edit</Text>
+          </Button>
+          <Button
+            danger
+            rounded
+            style={{ flex: 1 }}
+            onPress={this.deleteConfirmation}
+          >
+            <FontAwesome name="trash" size={20} color="#fff" />
+            <Text>Delete</Text>
+          </Button>
+        </View>
       </ScrollView>
     );
   }

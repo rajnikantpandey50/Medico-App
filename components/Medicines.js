@@ -10,14 +10,24 @@ import {
 import Header from "./header";
 import Medicine from "./medicine";
 import Configs from "../constants/Configs";
+import { NavigationEvents } from "react-navigation";
 
 export default class Medicines extends React.Component {
   state = {
     medicines: [],
     isLoading: true
   };
+  constructor() {
+    super();
+  }
   componentDidMount() {
-    var url = Configs.ServiceUrl + "medicines";
+    //console.log("componentDidMount");
+    this.getAllMedicines();
+  }
+
+  getAllMedicines = () => {
+    console.log("getAll");
+    var url = Configs.serviceUrl + "medicines";
     return fetch(url)
       .then(response => response.json())
       .then(res => {
@@ -25,8 +35,7 @@ export default class Medicines extends React.Component {
         this.setState({ medicines: res, isLoading: false });
       })
       .catch(err => console.log(err));
-  }
-
+  };
   showDetails = med => {
     this.props.navigation.navigate("Details", med);
   };
@@ -56,6 +65,8 @@ export default class Medicines extends React.Component {
       );
     }
   };
+  componentWillUnmount() {}
+
   render() {
     if (this.state.isLoading)
       return (
@@ -65,6 +76,7 @@ export default class Medicines extends React.Component {
       );
     return (
       <View style={styles.body}>
+        <NavigationEvents onWillFocus={this.getAllMedicines} />
         <ScrollView>{this.showResult()}</ScrollView>
       </View>
     );

@@ -12,6 +12,7 @@ import Header from "../components/header";
 import Buy from "../components/Buy";
 import Sell from "../components/Sell";
 import SellResult from "../components/SellResult";
+import Edit from "../components/Edit";
 
 export const AddStack = createStackNavigator({
   Add: {
@@ -36,6 +37,16 @@ export const MedicineStack = createStackNavigator({
 
   Details: {
     screen: MedicineDetails,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.state.params.medicineName.toUpperCase(),
+      headerStyle: { backgroundColor: "#DD80FF" },
+      headerTintColor: "#fff"
+    }),
+    headerMode: "float",
+    headerTransitionPreset: "fade-in-place"
+  },
+  Edit: {
+    screen: Edit,
     navigationOptions: ({ navigation }) => ({
       title: navigation.state.params.medicineName.toUpperCase(),
       headerStyle: { backgroundColor: "#DD80FF" },
